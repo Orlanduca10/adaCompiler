@@ -1,23 +1,45 @@
 #ifndef TAC_H
 #define TAC_H
-#include "symtab.h"
+
+// ... (Existing TACOp enum and TAC struct definitions) ...
 
 typedef enum {
-    TAC_ASSIGN, TAC_BINOP, TAC_UNARY, TAC_LABEL, TAC_GOTO,
-    TAC_IFZ, TAC_CALL, TAC_PARAM, TAC_RETURN, TAC_LITERAL
-} TACKind;
+    TAC_ADD, TAC_SUB, TAC_MUL, TAC_DIV,
+    TAC_EQ, TAC_LT, TAC_GT, // Comparisons
+    TAC_COPY,                // x := y
+    TAC_LABEL,               // Label for jumps (L1:)
+    TAC_JUMP,                // Unconditional jump (goto L1)
+    TAC_JFALSE,              // Jump if false (if t0 == 0 goto L1)
+    TAC_CALL,                // Function call
+    TAC_PRINT,               // Special for Put_Line
+    TAC_READ                 // Special for Get_Line
+} TACOp;
 
 typedef struct TAC {
-    TACKind kind;
-    char *a, *b, *c;
+    TACOp op;
+    char *arg1;
+    char *arg2;
+    char *result;
     struct TAC *next;
 } TAC;
 
-TAC *tac_new(TACKind kind, char *a, char *b, char *c);
-TAC *tac_join(TAC *t1, TAC *t2);
-void tac_print(TAC *t);
+// New structure for tracking string literals
+typedef struct StringLiteral {
+    char *value;
+    char *label;
+    struct StringLiteral *next;
+} StringLiteral;
 
-char *new_temp();
-char *new_label();
+// Global head for string list
+extern StringLiteral *string_list_head;
+
+// Functions
+TAC* new_tac(TACOp op, char* arg1, char* arg2, char* result);
+void print_tac(TAC* head);
+char* make_temp();
+char* make_label();
+
+// New function to handle string literals
+char* get_string_label(const char *value);
 
 #endif

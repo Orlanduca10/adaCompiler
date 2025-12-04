@@ -1,105 +1,98 @@
 #include "tac.h"
-#include "ast.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-static int temp_id = 0;
-static int label_id = 0;
+int temp_count = 0;
+int label_count = 0;
+int string_count = 0;
+StringLiteral *string_list_head = NULL;
 
-char *new_temp() {
-    char buf[32];
-    sprintf(buf, "t%d", temp_id++);
-    return strdup(buf);
+// Global TAC list head and tail
+TAC *tac_head = NULL;
+TAC *tac_tail = NULL;
+
+TAC* new_tac(TACOp op, char* arg1, char* arg2, char* result) {
+    TAC* instr = malloc(sizeof(TAC));
+    instr->op = op;
+    instr->arg1 = arg1 ? strdup(arg1) : NULL;
+    instr->arg2 = arg2 ? strdup(arg2) : NULL;
+    instr->result = result ? strdup(result) : NULL;
+    instr->next = NULL;
+    return instr;
 }
 
-char *new_label() {
-    char buf[32];
-    sprintf(buf, "L%d", label_id++);
-    return strdup(buf);
+char* make_temp() {
+    char buffer[20];
+    sprintf(buffer, "t%d", temp_count++);
+    return strdup(buffer);
 }
 
-TAC *tac_new(TACKind k, char *a, char *b, char *c){
-    TAC *t = malloc(sizeof(TAC));
-    t->kind = k;
-    t->a = a ? strdup(a) : NULL;
-    t->b = b ? strdup(b) : NULL;
-    t->c = c ? strdup(c) : NULL;
-    t->next = NULL;
-    return t;
+char* make_label() {
+    char buffer[20];
+    sprintf(buffer, "L%d", label_count++);
+    return strdup(buffer);
 }
 
-TAC *tac_join(TAC *a, TAC *b) {
-    if (!a) return b;
-    TAC *t = a;
-    while (t->next) t = t->next;
-    t->next = b;
-    return a;
+// Function to find or create a unique label for a string literal
+char* get_string_label(const char *value) {
+    StringLiteral *curr = string_list_head;
+    // 1. Check if string already exists
+    while (curr) {
+        if (strcmp(curr->value, value) == 0) {
+            return curr->label;
+        }
+        curr = curr->next;
+    }
+
+    // 2. String does not exist, create new entry
+    StringLiteral *new_string = malloc(sizeof(StringLiteral));
+    new_string->value = strdup(value);
+    
+    // Assign new label (S0, S1, S2...)
+    char label_buffer[20];
+    sprintf(label_buffer, "S%d", string_count++);
+    new_string->label = strdup(label_buffer);
+    new_string->next = NULL;
+
+    // Add to list
+    if (string_list_head == NULL) {
+        string_list_head = new_string;
+    } else {
+        curr = string_list_head;
+        while (curr->next) curr = curr->next;
+        curr->next = new_string;
+    }
+
+    return new_string->label;
 }
 
-void tac_print(TAC *t) {
-    while (t) {
-        switch (t->kind) {
-            case TAC_ASSIGN:
-                if (t->a && t->b)
-                    printf("%s = %s\n", t->a, t->b);
-                /* if a is NULL this assign may be part of a BINOP layout (handled below) */
+void print_tac(TAC* head) {
+    TAC* curr = head;
+    while (curr) {
+        switch (curr->op) {
+            case TAC_ADD: printf("%s = %s + %s\n", curr->result, curr->arg1, curr->arg2); break;
+            case TAC_SUB: printf("%s = %s - %s\n", curr->result, curr->arg1, curr->arg2); break;
+            case TAC_MUL: printf("%s = %s * %s\n", curr->result, curr->arg1, curr->arg2); break;
+            case TAC_DIV: printf("%s = %s / %s\n", curr->result, curr->arg1, curr->arg2); break;
+            case TAC_COPY: printf("%s = %s\n", curr->result, curr->arg1); break;
+            case TAC_LABEL: printf("%s:\n", curr->result); break;
+            case TAC_JUMP: printf("goto %s\n", curr->result); break;
+            case TAC_JFALSE: printf("ifFalse %s goto %s\n", curr->arg1, curr->result); break;
+            case TAC_GT: printf("%s = %s > %s\n", curr->result, curr->arg1, curr->arg2); break;
+            case TAC_LT: printf("%s = %s < %s\n", curr->result, curr->arg1, curr->arg2); break;
+            case TAC_EQ: printf("%s = %s == %s\n", curr->result, curr->arg1, curr->arg2); break;
+            case TAC_PRINT: printf("PRINT %s\n", curr->arg1); break;
+            case TAC_CALL: 
+                if (curr->arg2)
+                    printf("%s = call %s, %s\n", curr->result, curr->arg1, curr->arg2);
+                else
+                    printf("call %s\n", curr->arg1);
                 break;
-
-            case TAC_BINOP:
-                /* Generator emits BINOP followed by an ASSIGN holding the right operand.
-                   Print using both nodes if available, and skip the following assign. */
-                if (t->a && t->b && t->c) {
-                    const char *right = NULL;
-                    if (t->next && t->next->kind == TAC_ASSIGN && t->next->b)
-                        right = t->next->b;
-                    if (right)
-                        printf("%s = %s %s %s\n", t->a, t->b, t->c, right);
-                    else
-                        printf("%s = %s %s ?\n", t->a, t->b, t->c);
-                    /* skip the following assign node if it was used */
-                    if (t->next && t->next->kind == TAC_ASSIGN)
-                        t = t->next;
-                }
-                break;
-
-            case TAC_LITERAL:
-                /* nothing to print for standalone literal nodes */
-                break;
-
-            case TAC_UNARY:
-                if (t->a && t->b && t->c)
-                    printf("%s = %s %s\n", t->a, t->b, t->c);
-                break;
-
-            case TAC_LABEL:
-                if (t->a) printf("%s:\n", t->a);
-                break;
-
-            case TAC_GOTO:
-                if (t->a) printf("goto %s\n", t->a);
-                break;
-
-            case TAC_IFZ:
-                if (t->a && t->b) printf("ifz %s goto %s\n", t->a, t->b);
-                break;
-
-            case TAC_CALL:
-                /* support both forms: dest = call name(arg)  OR  call name(arg) */
-                if (t->a && t->b)
-                    printf("%s = call %s(%s)\n", t->a, t->b, t->c ? t->c : "");
-                else if (t->b)
-                    printf("call %s(%s)\n", t->b, t->c ? t->c : "");
-                break;
-
-            case TAC_PARAM:
-                if (t->a) printf("param %s\n", t->a);
-                break;
-
-            case TAC_RETURN:
-                if (t->a) printf("return %s\n", t->a);
+            default: 
+                printf("Unknown TAC operation: %d\n", curr->op); 
                 break;
         }
-        t = t->next;
+        curr = curr->next;
     }
 }

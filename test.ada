@@ -1,13 +1,9 @@
 procedure Main is
 begin
-    X := 10;
-    while X > 0 loop
-        Put_Line("Ola");
-        X := X - 1;
-        Y:=  X - 3;
-        while X > 0 loop
-            Put_Line("Countdown");
-            X := 10;
-        end loop;
+    X := 0;
+    while X != 2 loop
+        X := 2;
+        Y := 3;
     end loop;
+    Put_Line(Y);
 end Main;

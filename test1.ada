@@ -1,4 +1,4 @@
 procedure Main is
 begin
-    arroz := 23;
+    Put_Line("Ola");
 end Main;
