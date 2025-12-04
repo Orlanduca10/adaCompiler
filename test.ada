@@ -1,9 +1,6 @@
 procedure Main is
 begin
     X := 0;
-    while X != 2 loop
-        X := 2;
-        Y := 3;
-    end loop;
-    Put_Line(Y);
+    if X /= 10 then Put_Line("SIM"); X := 20; else Put_Line("Nao");
+    end if;
 end Main;

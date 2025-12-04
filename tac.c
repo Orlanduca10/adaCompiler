@@ -82,6 +82,7 @@ void print_tac(TAC* head) {
             case TAC_GT: printf("%s = %s > %s\n", curr->result, curr->arg1, curr->arg2); break;
             case TAC_LT: printf("%s = %s < %s\n", curr->result, curr->arg1, curr->arg2); break;
             case TAC_EQ: printf("%s = %s == %s\n", curr->result, curr->arg1, curr->arg2); break;
+            case TAC_NEQ: printf("%s = %s != %s\n", curr->result, curr->arg1, curr->arg2); break;
             case TAC_PRINT: printf("PRINT %s\n", curr->arg1); break;
             case TAC_CALL: 
                 if (curr->arg2)

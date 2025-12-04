@@ -36,8 +36,17 @@ void print_symbol_table() {
     printf("\n--- Symbol Table ---\n");
     Symbol *current = symbol_table;
     while (current != NULL) {
-        printf("Name: %-10s | Type: %d | Offset: %d\n", 
-               current->name, current->type, current->offset);
+        // Convert type enum to string
+        char *type_str;
+        switch(current->type) {
+            case TYPE_INT:    type_str = "INT"; break;
+            case TYPE_STRING: type_str = "STRING"; break;
+            case TYPE_BOOL:   type_str = "BOOL"; break;
+            default:          type_str = "UNKNOWN"; break;
+        }
+        
+        printf("Name: %-10s | Type: %-6s | Offset: %d\n", 
+               current->name, type_str, current->offset);
         current = current->next;
     }
     printf("--------------------\n");

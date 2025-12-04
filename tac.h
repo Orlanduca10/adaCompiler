@@ -12,7 +12,8 @@ typedef enum {
     TAC_JFALSE,              // Jump if false (if t0 == 0 goto L1)
     TAC_CALL,                // Function call
     TAC_PRINT,               // Special for Put_Line
-    TAC_READ                 // Special for Get_Line
+    TAC_READ,               // Special for Get_Line
+    TAC_NEQ                  // Not equal comparison
 } TACOp;
 
 typedef struct TAC {

@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
 
     check_semantics(root);
         
-    print_symbol_table(); // Debugging: Check if your table works
+    print_symbol_table();
 
 
     generate_code(root);

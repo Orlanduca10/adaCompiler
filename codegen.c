@@ -8,8 +8,6 @@
 extern TAC *tac_head;
 extern TAC *tac_tail;
 
-// Type enumeration placeholder (assuming 0 is integer)
-#define TYPE_INT 0 
 
 // --- Symbol Management Helpers ---
 
@@ -51,7 +49,8 @@ char* generate_expr(AST *node) {
         else if (strcmp(node->value, "*") == 0) op = TAC_MUL;
         else if (strcmp(node->value, ">") == 0) op = TAC_GT;
         else if (strcmp(node->value, "<") == 0) op = TAC_LT;
-        else if (strcmp(node->value, "==") == 0) op = TAC_EQ;
+        else if (strcmp(node->value, "=") == 0) op = TAC_EQ;
+        else if (strcmp(node->value, "/=") == 0) op = TAC_NEQ;
         else op = TAC_ADD; 
 
         append_tac(new_tac(op, t1, t2, result));

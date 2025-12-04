@@ -4,7 +4,8 @@
 // Assume integer type (0) for all variables and temporaries
 typedef enum {
     TYPE_INT = 0,
-    TYPE_STRING = 1
+    TYPE_STRING = 1,
+    TYPE_BOOL = 2
 } DataType;
 
 typedef struct Symbol {
