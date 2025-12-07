@@ -36,22 +36,22 @@ char* generate_expr(AST *node) {
     if (!node) return NULL;
 
     if (node->type == NODE_LITERAL || node->type == NODE_VAR) {
-        // It's already a value (e.g., "10" or "X"), just return the name
         return node->value;
     }
 
     if (node->type == NODE_BINOP) {
         char *t1 = generate_expr(node->left);
         char *t2 = generate_expr(node->right);
-        char *result = new_temp_var(); // *** USING FIXED HELPER ***
+        char *result = new_temp_var();
         
         TACOp op;
         if (strcmp(node->value, "+") == 0) op = TAC_ADD;
         else if (strcmp(node->value, "-") == 0) op = TAC_SUB;
         else if (strcmp(node->value, "*") == 0) op = TAC_MUL;
+        else if (strcmp(node->value, "/") == 0) op = TAC_DIV; // Added DIV
         else if (strcmp(node->value, ">") == 0) op = TAC_GT;
         else if (strcmp(node->value, "<") == 0) op = TAC_LT;
-        else if (strcmp(node->value, "==") == 0) op = TAC_EQ;
+        else if (strcmp(node->value, "=") == 0) op = TAC_EQ;  // FIXED: Ada uses "=" not "=="
         else op = TAC_ADD; 
 
         append_tac(new_tac(op, t1, t2, result));
@@ -71,38 +71,67 @@ void generate_stmt(AST *node) {
         }
     } 
     else if (node->type == NODE_ASSIGN) {
-        // X := expr
-        char *rhs = generate_expr(node->right); // Evaluate right side
+        char *rhs = generate_expr(node->right);
         append_tac(new_tac(TAC_COPY, rhs, NULL, node->value));
     }
     else if (node->type == NODE_CALL) {
          if (strcmp(node->value, "Put_Line") == 0) {
              AST *arg_node = node->left;
              char *val = generate_expr(arg_node);
-             
-             // CRITICAL FIX: Ensure string literals are registered for MIPS data section
              if (arg_node && arg_node->type == NODE_LITERAL && arg_node->value[0] == '"') {
-                 // Calling this function registers the string and assigns it an S-label
                  get_string_label(arg_node->value); 
              }
-             
              append_tac(new_tac(TAC_PRINT, val, NULL, NULL));
          }
+         // --- NEW: Handle Get_Line ---
+         else if (strcmp(node->value, "Get_Line") == 0) {
+             // Expecting a variable as the argument (node->left)
+             if (node->left && node->left->type == NODE_VAR) {
+                 char *var_name = node->left->value;
+                 
+                 // Generate TAC: READ X
+                 // We use the 'result' field to store the destination variable name
+                 append_tac(new_tac(TAC_READ, NULL, NULL, var_name));
+             }
+         }
     }
+    // --- NEW: IF-THEN-ELSE IMPLEMENTATION ---
+    else if (node->type == NODE_IF) {
+        char *L_false = make_label(); // Label for ELSE or END
+        char *L_end = make_label();   // Label for END
+
+        // 1. Calculate condition
+        char *cond = generate_expr(node->cond);
+        
+        // 2. If condition is false (0), jump to L_false
+        append_tac(new_tac(TAC_JFALSE, cond, NULL, L_false));
+
+        // 3. Generate THEN block
+        generate_stmt(node->then_branch);
+
+        // 4. Jump to End (skip ELSE part)
+        append_tac(new_tac(TAC_JUMP, NULL, NULL, L_end));
+
+        // 5. Place L_false label here
+        append_tac(new_tac(TAC_LABEL, NULL, NULL, L_false));
+
+        // 6. Generate ELSE block (if it exists)
+        if (node->else_branch) {
+            generate_stmt(node->else_branch);
+        }
+
+        // 7. Place L_end label here
+        append_tac(new_tac(TAC_LABEL, NULL, NULL, L_end));
+    }
+    // ----------------------------------------
     else if (node->type == NODE_WHILE) {
         char *L_start = make_label();
         char *L_end = make_label();
 
         append_tac(new_tac(TAC_LABEL, NULL, NULL, L_start));
-        
-        // Condition
         char *cond = generate_expr(node->cond);
         append_tac(new_tac(TAC_JFALSE, cond, NULL, L_end));
-
-        // Body
         generate_stmt(node->body);
-
-        // Jump back
         append_tac(new_tac(TAC_JUMP, NULL, NULL, L_start));
         append_tac(new_tac(TAC_LABEL, NULL, NULL, L_end));
     }

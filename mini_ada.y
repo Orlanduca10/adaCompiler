@@ -101,10 +101,12 @@ statement
           $$ = new_ast(NODE_CALL, "Put_Line");
           $$->left = $3;
       }
-    | GET_LINE SEMICOL
+    | GET_LINE LPAREN ID RPAREN SEMICOL
       {
-          // procedure call: Get_Line;
+          // procedure call: Get_Line(ID);
           $$ = new_ast(NODE_CALL, "Get_Line");
+          // Store the variable name in a new NODE_VAR node attached to 'left'
+          $$->left = new_ast(NODE_VAR, $3); 
       }
     ;
 
