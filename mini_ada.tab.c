@@ -471,7 +471,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   68
+#define YYLAST   70
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  27
@@ -480,7 +480,7 @@ union yyalloc
 /* YYNRULES -- Number of rules.  */
 #define YYNRULES  21
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  59
+#define YYNSTATES  62
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   281
@@ -533,8 +533,8 @@ static const yytype_int8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    35,    35,    45,    57,    65,    77,    83,    91,    98,
-     104,   113,   115,   117,   119,   121,   126,   132,   134,   136,
-     138,   140
+     104,   115,   117,   119,   121,   123,   128,   134,   136,   138,
+     140,   142
 };
 #endif
 
@@ -579,12 +579,13 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       7,    -7,    14,     8,   -30,    34,    17,    -5,    -3,    -3,
-      -8,    19,    38,    17,   -30,    -3,   -30,   -30,   -30,    -3,
-      -3,    33,   -30,   -30,    35,    -3,   -30,    39,   -30,     2,
-     -30,     4,    -3,    -3,    17,    -3,    -3,    17,     6,    20,
-     -30,   -30,   -30,   -30,    42,   -30,   -30,    47,    36,   -30,
-      17,    43,   -30,    48,    37,    51,   -30,    40,   -30
+       7,    -7,    16,     9,   -30,    27,    17,    18,    -3,    -3,
+      23,    24,    31,    17,   -30,    -3,   -30,   -30,   -30,    -3,
+      -3,    32,   -30,   -30,    37,    -3,    46,    39,   -30,     2,
+     -30,     4,    -3,    -3,    17,    -3,    -3,    17,     6,    30,
+      33,   -30,   -30,   -30,   -30,    41,   -30,   -30,    49,    35,
+      36,   -30,    17,    47,   -30,   -30,    52,    40,    54,   -30,
+      42,   -30
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -594,16 +595,17 @@ static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     0,     1,     0,     0,     0,     0,     0,
        0,     0,     0,     3,     4,     0,    19,    17,    18,     0,
-       0,     0,    11,    16,     0,     0,    10,     0,     5,     0,
+       0,     0,    11,    16,     0,     0,     0,     0,     5,     0,
       21,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       6,    20,    12,    13,     0,    14,    15,     0,     0,     2,
-       0,     0,     9,     0,     0,     0,     8,     0,     7
+       0,     6,    20,    12,    13,     0,    14,    15,     0,     0,
+       0,     2,     0,     0,     9,    10,     0,     0,     0,     8,
+       0,     7
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -30,   -30,     0,   -30,    52,    23,   -29,    49
+     -30,   -30,   -20,   -30,    56,    25,   -29,    51
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -617,24 +619,26 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      16,    17,    18,    42,    43,     3,    45,    46,    32,    33,
-      32,    33,    32,    33,     4,     1,    25,     5,    15,    19,
-       7,    20,    35,    36,    35,    36,    35,    36,    40,    41,
-       8,    48,    24,     9,    44,    10,    11,    47,    29,    32,
-      33,    32,    33,    31,     6,    26,    49,    34,    38,    27,
-      53,    39,    37,    35,    36,    35,    36,    50,    51,    55,
-      54,     0,    52,    56,    57,    28,    58,     0,    30
+      16,    17,    18,    43,    44,     3,    46,    47,    32,    33,
+      32,    33,    32,    33,    45,     1,     4,    48,     5,    19,
+       7,    20,    35,    36,    35,    36,    35,    36,    41,    42,
+       8,    49,    56,     9,    24,    10,    11,     6,    32,    33,
+      29,    15,    27,    32,    33,    31,    34,    25,    26,    39,
+      38,    40,    35,    36,    37,    50,    52,    35,    36,    51,
+      53,    54,    55,    58,    57,     0,    59,    60,    61,    28,
+      30
 };
 
 static const yytype_int8 yycheck[] =
 {
        3,     4,     5,    32,    33,    12,    35,    36,     6,     7,
-       6,     7,     6,     7,     0,     8,    24,     9,    23,    22,
+       6,     7,     6,     7,    34,     8,     0,    37,     9,    22,
        3,    24,    20,    21,    20,    21,    20,    21,    26,    25,
-      13,    25,     9,    16,    34,    18,    19,    37,    15,     6,
-       7,     6,     7,    20,    10,    26,    26,    14,    25,    11,
-      50,    12,    17,    20,    21,    20,    21,    15,    11,    11,
-      17,    -1,    26,    26,    13,    13,    26,    -1,    19
+      13,    25,    52,    16,     9,    18,    19,    10,     6,     7,
+      15,    23,    11,     6,     7,    20,    14,    24,    24,     3,
+      25,    12,    20,    21,    17,    25,    15,    20,    21,    26,
+      11,    26,    26,    11,    17,    -1,    26,    13,    26,    13,
+      19
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
@@ -643,10 +647,11 @@ static const yytype_int8 yystos[] =
 {
        0,     8,    28,    12,     0,     9,    10,     3,    13,    16,
       18,    19,    29,    30,    31,    23,     3,     4,     5,    22,
-      24,    32,    33,    34,    32,    24,    26,    11,    31,    32,
-      34,    32,     6,     7,    14,    20,    21,    17,    32,    12,
-      26,    25,    33,    33,    29,    33,    33,    29,    25,    26,
-      15,    11,    26,    29,    17,    11,    26,    13,    26
+      24,    32,    33,    34,    32,    24,    24,    11,    31,    32,
+      34,    32,     6,     7,    14,    20,    21,    17,    32,     3,
+      12,    26,    25,    33,    33,    29,    33,    33,    29,    25,
+      25,    26,    15,    11,    26,    26,    29,    17,    11,    26,
+      13,    26
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
@@ -661,7 +666,7 @@ static const yytype_int8 yyr1[] =
 static const yytype_int8 yyr2[] =
 {
        0,     2,     8,     1,     1,     2,     4,     9,     7,     5,
-       2,     1,     3,     3,     3,     3,     1,     1,     1,     1,
+       5,     1,     3,     3,     3,     3,     1,     1,     1,     1,
        3,     2
 };
 
@@ -1132,7 +1137,7 @@ yyreduce:
           root = new_ast(NODE_PROGRAM, "Main");
           root->body = (yyvsp[-3].node);
       }
-#line 1136 "mini_ada.tab.c"
+#line 1141 "mini_ada.tab.c"
     break;
 
   case 3: /* block: statement_list  */
@@ -1144,7 +1149,7 @@ yyreduce:
           (yyval.node)->child_count = (yyvsp[0].node)->child_count;
           free((yyvsp[0].node)); // free the temporary list node
       }
-#line 1148 "mini_ada.tab.c"
+#line 1153 "mini_ada.tab.c"
     break;
 
   case 4: /* statement_list: statement  */
@@ -1156,7 +1161,7 @@ yyreduce:
           (yyval.node)->children[0] = (yyvsp[0].node);
           (yyval.node)->child_count = 1;
       }
-#line 1160 "mini_ada.tab.c"
+#line 1165 "mini_ada.tab.c"
     break;
 
   case 5: /* statement_list: statement_list statement  */
@@ -1168,7 +1173,7 @@ yyreduce:
           (yyval.node)->children = realloc((yyval.node)->children, sizeof(AST*) * (yyval.node)->child_count);
           (yyval.node)->children[(yyval.node)->child_count - 1] = (yyvsp[0].node);
       }
-#line 1172 "mini_ada.tab.c"
+#line 1177 "mini_ada.tab.c"
     break;
 
   case 6: /* statement: ID ASSIGN expr SEMICOL  */
@@ -1178,7 +1183,7 @@ yyreduce:
           (yyval.node) = new_ast(NODE_ASSIGN, (yyvsp[-3].str));
           (yyval.node)->right = (yyvsp[-1].node);
       }
-#line 1182 "mini_ada.tab.c"
+#line 1187 "mini_ada.tab.c"
     break;
 
   case 7: /* statement: IF expr THEN block ELSE block END IF SEMICOL  */
@@ -1190,7 +1195,7 @@ yyreduce:
           (yyval.node)->then_branch = (yyvsp[-5].node);
           (yyval.node)->else_branch = (yyvsp[-3].node);
       }
-#line 1194 "mini_ada.tab.c"
+#line 1199 "mini_ada.tab.c"
     break;
 
   case 8: /* statement: WHILE expr LOOP block END LOOP SEMICOL  */
@@ -1201,7 +1206,7 @@ yyreduce:
           (yyval.node)->cond = (yyvsp[-5].node);
           (yyval.node)->body = (yyvsp[-3].node);
       }
-#line 1205 "mini_ada.tab.c"
+#line 1210 "mini_ada.tab.c"
     break;
 
   case 9: /* statement: PUT_LINE LPAREN expr RPAREN SEMICOL  */
@@ -1211,90 +1216,92 @@ yyreduce:
           (yyval.node) = new_ast(NODE_CALL, "Put_Line");
           (yyval.node)->left = (yyvsp[-2].node);
       }
-#line 1215 "mini_ada.tab.c"
+#line 1220 "mini_ada.tab.c"
     break;
 
-  case 10: /* statement: GET_LINE SEMICOL  */
+  case 10: /* statement: GET_LINE LPAREN ID RPAREN SEMICOL  */
 #line 105 "mini_ada.y"
       {
-          // procedure call: Get_Line;
+          // procedure call: Get_Line(ID);
           (yyval.node) = new_ast(NODE_CALL, "Get_Line");
+          // Store the variable name in a new NODE_VAR node attached to 'left'
+          (yyval.node)->left = new_ast(NODE_VAR, (yyvsp[-2].str)); 
       }
-#line 1224 "mini_ada.tab.c"
+#line 1231 "mini_ada.tab.c"
     break;
 
   case 11: /* expr: term  */
-#line 114 "mini_ada.y"
+#line 116 "mini_ada.y"
       { (yyval.node) = (yyvsp[0].node); }
-#line 1230 "mini_ada.tab.c"
+#line 1237 "mini_ada.tab.c"
     break;
 
   case 12: /* expr: expr OP term  */
-#line 116 "mini_ada.y"
+#line 118 "mini_ada.y"
       { (yyval.node) = new_ast_binary(NODE_BINOP, (yyvsp[-1].str), (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1236 "mini_ada.tab.c"
+#line 1243 "mini_ada.tab.c"
     break;
 
   case 13: /* expr: expr COMPARE term  */
-#line 118 "mini_ada.y"
+#line 120 "mini_ada.y"
       { (yyval.node) = new_ast_binary(NODE_BINOP, (yyvsp[-1].str), (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1242 "mini_ada.tab.c"
+#line 1249 "mini_ada.tab.c"
     break;
 
   case 14: /* expr: expr AND term  */
-#line 120 "mini_ada.y"
+#line 122 "mini_ada.y"
       { (yyval.node) = new_ast_binary(NODE_BINOP, "and", (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1248 "mini_ada.tab.c"
+#line 1255 "mini_ada.tab.c"
     break;
 
   case 15: /* expr: expr OR term  */
-#line 122 "mini_ada.y"
+#line 124 "mini_ada.y"
       { (yyval.node) = new_ast_binary(NODE_BINOP, "or", (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1254 "mini_ada.tab.c"
+#line 1261 "mini_ada.tab.c"
     break;
 
   case 16: /* term: factor  */
-#line 127 "mini_ada.y"
+#line 129 "mini_ada.y"
       { (yyval.node) = (yyvsp[0].node); }
-#line 1260 "mini_ada.tab.c"
+#line 1267 "mini_ada.tab.c"
     break;
 
   case 17: /* factor: NUMBER  */
-#line 133 "mini_ada.y"
+#line 135 "mini_ada.y"
       { (yyval.node) = new_ast(NODE_LITERAL, (yyvsp[0].str)); }
-#line 1266 "mini_ada.tab.c"
+#line 1273 "mini_ada.tab.c"
     break;
 
   case 18: /* factor: STRING  */
-#line 135 "mini_ada.y"
+#line 137 "mini_ada.y"
       { (yyval.node) = new_ast(NODE_LITERAL, (yyvsp[0].str)); }
-#line 1272 "mini_ada.tab.c"
+#line 1279 "mini_ada.tab.c"
     break;
 
   case 19: /* factor: ID  */
-#line 137 "mini_ada.y"
+#line 139 "mini_ada.y"
       { (yyval.node) = new_ast(NODE_VAR, (yyvsp[0].str)); }
-#line 1278 "mini_ada.tab.c"
+#line 1285 "mini_ada.tab.c"
     break;
 
   case 20: /* factor: LPAREN expr RPAREN  */
-#line 139 "mini_ada.y"
+#line 141 "mini_ada.y"
       { (yyval.node) = (yyvsp[-1].node); }
-#line 1284 "mini_ada.tab.c"
+#line 1291 "mini_ada.tab.c"
     break;
 
   case 21: /* factor: NOT factor  */
-#line 141 "mini_ada.y"
+#line 143 "mini_ada.y"
       {
           // unary not
           (yyval.node) = new_ast(NODE_UNARYOP, "not");
           (yyval.node)->left = (yyvsp[0].node);
       }
-#line 1294 "mini_ada.tab.c"
+#line 1301 "mini_ada.tab.c"
     break;
 
 
-#line 1298 "mini_ada.tab.c"
+#line 1305 "mini_ada.tab.c"
 
       default: break;
     }
@@ -1487,7 +1494,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 148 "mini_ada.y"
+#line 150 "mini_ada.y"
 
 
 /* Main entry: parse, then print AST if successful 
