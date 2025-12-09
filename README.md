@@ -116,7 +116,9 @@ PROGRAM [Main]
             CALL [Put_Line]
               LITERAL ["Countdown"]
             ASSIGN [X]
-              LITERAL [10]
+              LITERAL [10]    
+    ---
+
 📚 **Documentation**
 **Makefile** - Automates compilation, linking, and cleanup for the entire project.
 
@@ -182,4 +184,5 @@ PROGRAM [Main]
 Made by Bruno Barros and Orlando Soares.
 
 Built as part of coursework at Faculdade de Ciências da Universidade do Porto.
+
 
