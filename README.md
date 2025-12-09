@@ -18,17 +18,40 @@ Put_Line(...) and Get_Line; statements
 Arithmetic and comparison operators (+, -, *, /, =, <, >, etc.)
 Logical operators (and, or, not)
 Literals (numbers, strings) and variable references
+
+---
 📁 Project Structure
-mini_ada/
-├── mini_ada.l # Lexical analyzer (Flex)
-|
-├── mini_ada.y # Parser (Bison)
-|
-├── ast.h # AST (Abstract Syntax Tree) structure and prototypes
-|
-└── ast.c # Implementation of AST creation and printing
-
-
+adaCompiler/    
+|- Makefile    
+|- README.md    
+|- ast.c    
+|- ast.h    
+|- ast.o    
+|- codegen.c    
+|- codegen.h    
+|- compiler.exe    
+|- lex.yy.c    
+|- lex.yy.o    
+|- main.c    
+|- mini_ada.exe    
+|- mini_ada1    
+|- mini_adatab.c    
+|- mini_adatab.h    
+|- mini_adatab.o    
+|- mini_aday    
+|- mips_code    
+|- mips_codegen.c    
+|- mips_codegen.h    
+|- outs    
+|- semantics.c    
+|- semantics.h    
+|- symbol_table.c    
+|- symbol_table.h    
+|- tac.c    
+|- tac.h    
+|- test.ada    
+|- test1.ada        
+|- test2.ada    
 
 
 README.md
@@ -39,13 +62,16 @@ Make sure you have the following tools installed:
 Flex (lexical analyzer generator)
 Bison (parser generator)
 gcc (C compiler)
-Run this command (in Linux):
+Run this command (in Linux) (Ignoring the already flex and bison compiled files)
 
-flex mini_ada.l bison -d mini_ada.y
+# Regenerate
+bison -d mini_ada.y
+flex mini_ada.l
+gcc -g -Wall -o compiler main.c ast.c symbol_table.c semantics.c tac.c codegen.c mips_codegen.c mini_ada.tab.c lex.yy.c
 
-gcc mini_ada.tab.c lex.yy.c ast.c -o mini_ada
+# Test
+./compiler test.ada
 
-./mini_ada < test.ada
 
 For test.ada that looks like this:procedure Main is
 
@@ -91,16 +117,69 @@ PROGRAM [Main]
               LITERAL ["Countdown"]
             ASSIGN [X]
               LITERAL [10]
-📚 Documentation
-ast.h - Contains all AST node definitions and function prototypes
+📚 **Documentation**
+**Makefile** - Automates compilation, linking, and cleanup for the entire project.
 
-ast.c - Implements AST node creation and pretty-printing functions
+**README.md** - Project documentation and instructions.
 
-mini_ada.l - Lexical rules for token recognition
+**ast.h** - Defines all AST node structures and function prototypes.
 
-mini_ada.y - Grammar rules and AST construction
+**ast.c** - Implements AST node creation, traversal, and printing utilities.
+
+**ast.o** - Object file generated from ast.c during compilation.
+
+**codegen.h** - Function prototypes and shared structures for code generation.
+
+**codegen.c** - Generates intermediate code or target code from the AST.
+
+**compiler.exe** - Compiled executable of the Mini-Ada compiler (likely Windows build).
+
+**lex.yy.c** - Generated lexical analyzer produced by flex.
+
+**lex.yy.o** - Object file generated from the lexer source.
+
+**main.c** - Compiler entry point; coordinates parsing, semantic analysis, and codegen.
+
+**mini_ada.exe** - Executable version of the Mini-Ada compiler.
+
+**mini_ada1** - Likely an older or alternate output binary for testing.
+
+**mini_adatab.c** - Implements lookup tables or metadata for Mini-Ada grammar.
+
+**mini_adatab.h** - Definitions and declarations for Mini-Ada grammar tables.
+
+**mini_adatab.o** - Object file generated from mini_adatab.c.
+
+**mini_ada.y** - Likely parser output or binary generated from .y grammar (platform dependent).
+
+**mips_code** - Directory or file containing MIPS assembly output.
+
+**mips_codegen.c** - Converts internal IR or AST into MIPS assembly instructions.
+
+**mips_codegen.h** - Header file defining MIPS codegen functions and structures.
+
+**out.s** - Output directory or file for generated compiler results.
+
+**semantics.c** - Implements semantic analysis (type checking, scope rules, symbol validation).
+
+**semantics.h** - Function prototypes and data structures for the semantic analyzer.
+
+**symbol_table.c** - Implements symbol table creation, lookup, and scope management.
+
+**symbol_table.h** - Symbol table definitions and function prototypes.
+
+**tac.c** - Implements TAC (Three-Address Code) intermediate representation generation.
+
+**tac.h** - Header for TAC structures and functions.
+
+**test.ada** - Sample Ada test program for compiler validation.
+
+**test1.ada** - Additional test case for parsing and analysis.
+
+**test2.ada** -Another test program for compiler functionality.
 
 👥 Authorship
 Made by Bruno Barros and Orlando Soares.
 
 Built as part of coursework at Faculdade de Ciências da Universidade do Porto.
+
