@@ -73,51 +73,105 @@ gcc -g -Wall -o compiler main.c ast.c symbol_table.c semantics.c tac.c codegen.c
 ./compiler test.ada
 
 
-For test.ada that looks like this:procedure Main is
-
+For test.ada that looks like this:    
+```text
+procedure Main is
 begin
-    X := 10;
-    while X > 0 loop
-        Put_Line("Countdown");
-        X := X - 1;
-        Y:=  X - 3;
-        while X > 0 loop
-            Put_Line("Countdown");
-            X := 10;
-        end loop;
-    end loop;
+    Get_Line(X);
+    if X = 10 then
+        Put_Line(X+10);
+    else
+        Y := X + 1;
+        Put_Line(Y);
+    end if;
 end Main;
-The programs prints this AST
+```
+```
+The tree printed is:
+PROGRAM [Main]
+  BLOCK
+    CALL [Get_Line]
+      VAR [X]
+    IF
+      BINOP [=]
+        VAR [X]
+        LITERAL [10]
+      BLOCK
+        CALL [Put_Line]
+          BINOP [+]
+            VAR [X]
+            LITERAL [10]
+      BLOCK
+        ASSIGN [Y]
+          BINOP [+]
+            VAR [X]
+            LITERAL [1]
+        CALL [Put_Line]
+          VAR [Y]
 
+Semantic Error: Variable 'X' used before assignment.
+Semantic Error: Variable 'X' used before assignment.
+Semantic Error: Variable 'X' used before assignment.
+Semantic Error: Variable 'X' used before assignment.
+
+--- Symbol Table ---
+Name: Y | Type: INT | Offset: 0
+
+READ X
+t0 = X == 10
+ifFalse t0 goto L0
+t1 = X + 10
+PRINT t1
+goto L1
+L0:
+t2 = X + 1
+Y = t2
+PRINT Y
+L1:
+```
+```
+procedure Main is
+begin
+    X := 0;
+    while X /= 2 loop
+        X := 2;
+        Y := 3;
+    end loop;
+    Put_Line(Y);
+end Main;
+```
+```
 PROGRAM [Main]
   BLOCK
     ASSIGN [X]
-      LITERAL [10]
+      LITERAL [0]
     WHILE
-      BINOP [>]
+      BINOP [/=]
         VAR [X]
-        LITERAL [0]
+        LITERAL [2]
       BLOCK
-        CALL [Put_Line]
-          LITERAL ["Countdown"]
         ASSIGN [X]
-          BINOP [-]
-            VAR [X]
-            LITERAL [1]
+          LITERAL [2]
         ASSIGN [Y]
-          BINOP [-]
-            VAR [X]
-            LITERAL [3]
-        WHILE
-          BINOP [>]
-            VAR [X]
-            LITERAL [0]
-          BLOCK
-            CALL [Put_Line]
-              LITERAL ["Countdown"]
-            ASSIGN [X]
-              LITERAL [10]    
-    ---
+          LITERAL [3]
+    CALL [Put_Line]
+      VAR [Y]
+
+--- Symbol Table ---
+Name: Y          | Type: INT    | Offset: 4
+Name: X          | Type: INT    | Offset: 0
+--------------------
+X = 0
+L0:
+t0 = X != 2
+ifFalse t0 goto L1
+X = 2
+Y = 3
+goto L0
+L1:
+PRINT Y
+```
+    
 
 📚 **Documentation**
 **Makefile** - Automates compilation, linking, and cleanup for the entire project.
@@ -184,5 +238,6 @@ PROGRAM [Main]
 Made by Bruno Barros and Orlando Soares.
 
 Built as part of coursework at Faculdade de Ciências da Universidade do Porto.
+
 
 
