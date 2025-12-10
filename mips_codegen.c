@@ -244,6 +244,33 @@ void generate_mips(TAC *head, FILE *f)
             store_variable_mips(f, curr->result, "$v0");
             break;
 
+        case TAC_AND:
+            fprintf(f, "  # %s = %s AND %s\n", curr->result, curr->arg1, curr->arg2);
+            get_operand_mips(f, curr->arg1, T0);
+            get_operand_mips(f, curr->arg2, T1);
+            // Bitwise AND works for 0/1 booleans
+            fprintf(f, "  and $t2, %s, %s\n", T0, T1); 
+            store_variable_mips(f, curr->result, "$t2");
+            break;
+
+        case TAC_OR:
+            fprintf(f, "  # %s = %s OR %s\n", curr->result, curr->arg1, curr->arg2);
+            get_operand_mips(f, curr->arg1, T0);
+            get_operand_mips(f, curr->arg2, T1);
+            // Bitwise OR works for 0/1 booleans
+            fprintf(f, "  or $t2, %s, %s\n", T0, T1);
+            store_variable_mips(f, curr->result, "$t2");
+            break;
+
+        case TAC_NOT:
+            fprintf(f, "  # %s = NOT %s\n", curr->result, curr->arg1);
+            get_operand_mips(f, curr->arg1, T0);
+            // "seq $t2, $t0, 0" sets $t2 to 1 if $t0 is 0 (False), and 0 otherwise.
+            // This effectively performs a Logical NOT.
+            fprintf(f, "  seq $t2, %s, 0\n", T0); 
+            store_variable_mips(f, curr->result, "$t2");
+            break;
+
         default:
             fprintf(f, "  # Unknown TAC operation: %d\n", curr->op);
             break;

@@ -1,5 +1,5 @@
 %{
-#include "ast.h" 
+#include "ast.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,6 +24,11 @@ void yyerror(const char *s) { fprintf(stderr, "Error: %s\n", s); }
 %token PUT_LINE GET_LINE
 %token AND OR NOT
 %token ASSIGN LPAREN RPAREN SEMICOL
+%left OR
+%left AND
+%left NOT
+%left COMPARE
+%left OP
 
 // Nonterminals produce AST nodes
 %type <node> program block statement statement_list expr term factor
@@ -106,7 +111,7 @@ statement
           // procedure call: Get_Line(ID);
           $$ = new_ast(NODE_CALL, "Get_Line");
           // Store the variable name in a new NODE_VAR node attached to 'left'
-          $$->left = new_ast(NODE_VAR, $3); 
+          $$->left = new_ast(NODE_VAR, $3);
       }
     ;
 
@@ -149,7 +154,7 @@ factor
 
 %%
 
-/* Main entry: parse, then print AST if successful 
+/* Main entry: parse, then print AST if successful
 int main(void) {
     if (yyparse() == 0) {
         printf("Parsed successfully!\n");
@@ -157,4 +162,3 @@ int main(void) {
     }
     return 0;
 }
-*/
