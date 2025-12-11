@@ -86,10 +86,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 15 "mini_ada.y"
+#line 12 "mini_ada.y"
 
-    char *str;   // semantic type for string tokens (IDs, NUMBER text, STRING text, ops)
-    AST *node;   // semantic type for AST nodes
+    char *str;
+    AST *node;
 
 #line 95 "mini_ada.tab.h"
 

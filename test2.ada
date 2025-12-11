@@ -1,5 +1,6 @@
 procedure Main is
 begin
+    X := 0;
     Get_Line(X);
     if X = 10 then
         Put_Line(X+10);

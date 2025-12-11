@@ -69,19 +69,16 @@
 /* First part of user prologue.  */
 #line 1 "mini_ada.y"
 
-#include "ast.h" 
+#include "ast.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// Root of the AST
 AST *root;
-// Prototype for the lexer (from Flex)
 int yylex(void);
-// Parser error callback
 void yyerror(const char *s) { fprintf(stderr, "Error: %s\n", s); }
 
-#line 85 "mini_ada.tab.c"
+#line 82 "mini_ada.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -136,14 +133,21 @@ enum yysymbol_kind_t
   YYSYMBOL_LPAREN = 24,                    /* LPAREN  */
   YYSYMBOL_RPAREN = 25,                    /* RPAREN  */
   YYSYMBOL_SEMICOL = 26,                   /* SEMICOL  */
-  YYSYMBOL_YYACCEPT = 27,                  /* $accept  */
-  YYSYMBOL_program = 28,                   /* program  */
-  YYSYMBOL_block = 29,                     /* block  */
-  YYSYMBOL_statement_list = 30,            /* statement_list  */
-  YYSYMBOL_statement = 31,                 /* statement  */
-  YYSYMBOL_expr = 32,                      /* expr  */
-  YYSYMBOL_term = 33,                      /* term  */
-  YYSYMBOL_factor = 34                     /* factor  */
+  YYSYMBOL_27_ = 27,                       /* '+'  */
+  YYSYMBOL_28_ = 28,                       /* '-'  */
+  YYSYMBOL_29_ = 29,                       /* '*'  */
+  YYSYMBOL_30_ = 30,                       /* '/'  */
+  YYSYMBOL_YYACCEPT = 31,                  /* $accept  */
+  YYSYMBOL_program = 32,                   /* program  */
+  YYSYMBOL_block = 33,                     /* block  */
+  YYSYMBOL_statement_list = 34,            /* statement_list  */
+  YYSYMBOL_statement = 35,                 /* statement  */
+  YYSYMBOL_expr = 36,                      /* expr  */
+  YYSYMBOL_logical_expr = 37,              /* logical_expr  */
+  YYSYMBOL_comparison_expr = 38,           /* comparison_expr  */
+  YYSYMBOL_arith_expr = 39,                /* arith_expr  */
+  YYSYMBOL_term = 40,                      /* term  */
+  YYSYMBOL_factor = 41                     /* factor  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -471,16 +475,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   70
+#define YYLAST   73
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  27
+#define YYNTOKENS  31
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  8
+#define YYNNTS  11
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  21
+#define YYNRULES  24
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  62
+#define YYNSTATES  65
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   281
@@ -501,7 +505,7 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,    29,    27,     2,    28,     2,    30,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -532,9 +536,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    35,    35,    45,    57,    65,    77,    83,    91,    98,
-     104,   115,   117,   119,   121,   123,   128,   134,   136,   138,
-     140,   142
+       0,    39,    39,    47,    57,    64,    74,    79,    86,    92,
+      97,   106,   111,   113,   115,   120,   122,   127,   129,   134,
+     139,   141,   143,   145,   147
 };
 #endif
 
@@ -553,9 +557,10 @@ static const char *const yytname[] =
   "\"end of file\"", "error", "\"invalid token\"", "ID", "NUMBER",
   "STRING", "OP", "COMPARE", "PROCEDURE", "IS", "BEGIN_", "END", "MAIN",
   "IF", "THEN", "ELSE", "WHILE", "LOOP", "PUT_LINE", "GET_LINE", "AND",
-  "OR", "NOT", "ASSIGN", "LPAREN", "RPAREN", "SEMICOL", "$accept",
-  "program", "block", "statement_list", "statement", "expr", "term",
-  "factor", YY_NULLPTR
+  "OR", "NOT", "ASSIGN", "LPAREN", "RPAREN", "SEMICOL", "'+'", "'-'",
+  "'*'", "'/'", "$accept", "program", "block", "statement_list",
+  "statement", "expr", "logical_expr", "comparison_expr", "arith_expr",
+  "term", "factor", YY_NULLPTR
 };
 
 static const char *
@@ -565,7 +570,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-30)
+#define YYPACT_NINF (-33)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -579,13 +584,13 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       7,    -7,    16,     9,   -30,    27,    17,    18,    -3,    -3,
-      23,    24,    31,    17,   -30,    -3,   -30,   -30,   -30,    -3,
-      -3,    32,   -30,   -30,    37,    -3,    46,    39,   -30,     2,
-     -30,     4,    -3,    -3,    17,    -3,    -3,    17,     6,    30,
-      33,   -30,   -30,   -30,   -30,    41,   -30,   -30,    49,    35,
-      36,   -30,    17,    47,   -30,   -30,    52,    40,    54,   -30,
-      42,   -30
+       7,    -8,    17,    11,   -33,     8,     9,     6,    -3,    -3,
+       2,    10,    19,     9,   -33,    -3,   -33,   -33,   -33,    -3,
+      -3,    18,   -14,   -33,     3,   -33,   -33,    14,    -3,    30,
+      23,   -33,    12,   -33,    15,     9,    -3,    -3,    -3,    -3,
+       9,    16,    20,    13,   -33,   -33,    21,   -33,   -33,   -33,
+      31,    32,    22,    24,   -33,     9,    25,   -33,   -33,    33,
+      26,    34,   -33,    27,   -33
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -594,24 +599,26 @@ static const yytype_int8 yypact[] =
 static const yytype_int8 yydefact[] =
 {
        0,     0,     0,     0,     1,     0,     0,     0,     0,     0,
-       0,     0,     0,     3,     4,     0,    19,    17,    18,     0,
-       0,     0,    11,    16,     0,     0,     0,     0,     5,     0,
-      21,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     6,    20,    12,    13,     0,    14,    15,     0,     0,
-       0,     2,     0,     0,     9,    10,     0,     0,     0,     8,
-       0,     7
+       0,     0,     0,     3,     4,     0,    22,    20,    21,     0,
+       0,     0,    11,    12,    15,    17,    19,     0,     0,     0,
+       0,     5,     0,    24,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     6,    23,     0,    13,    14,    18,
+      16,     0,     0,     0,     2,     0,     0,     9,    10,     0,
+       0,     0,     8,     0,     7
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -30,   -30,   -20,   -30,    56,    25,   -29,    51
+     -33,   -33,   -32,   -33,    36,    -4,   -33,   -23,    28,    35,
+      37
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     2,    12,    13,    14,    21,    22,    23
+       0,     2,    12,    13,    14,    21,    22,    23,    24,    25,
+      26
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -619,55 +626,55 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      16,    17,    18,    43,    44,     3,    46,    47,    32,    33,
-      32,    33,    32,    33,    45,     1,     4,    48,     5,    19,
-       7,    20,    35,    36,    35,    36,    35,    36,    41,    42,
-       8,    49,    56,     9,    24,    10,    11,     6,    32,    33,
-      29,    15,    27,    32,    33,    31,    34,    25,    26,    39,
-      38,    40,    35,    36,    37,    50,    52,    35,    36,    51,
-      53,    54,    55,    58,    57,     0,    59,    60,    61,    28,
-      30
+      16,    17,    18,    46,     3,    27,    36,    37,    51,    38,
+      39,    32,     7,    47,    48,     1,    34,     4,     6,    19,
+       5,    20,     8,    59,    41,     9,    28,    10,    11,    15,
+      30,    40,    35,    42,    29,    43,    55,    38,    44,    54,
+      45,    52,    60,    56,    61,    53,     0,    63,    57,    31,
+      58,     0,    62,    64,     0,     0,    33,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,    50,     0,     0,
+       0,     0,     0,    49
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     4,     5,    32,    33,    12,    35,    36,     6,     7,
-       6,     7,     6,     7,    34,     8,     0,    37,     9,    22,
-       3,    24,    20,    21,    20,    21,    20,    21,    26,    25,
-      13,    25,    52,    16,     9,    18,    19,    10,     6,     7,
-      15,    23,    11,     6,     7,    20,    14,    24,    24,     3,
-      25,    12,    20,    21,    17,    25,    15,    20,    21,    26,
-      11,    26,    26,    11,    17,    -1,    26,    13,    26,    13,
-      19
+       3,     4,     5,    35,    12,     9,    20,    21,    40,     6,
+       7,    15,     3,    36,    37,     8,    20,     0,    10,    22,
+       9,    24,    13,    55,    28,    16,    24,    18,    19,    23,
+      11,    17,    14,     3,    24,    12,    15,     6,    26,    26,
+      25,    25,    17,    11,    11,    25,    -1,    13,    26,    13,
+      26,    -1,    26,    26,    -1,    -1,    19,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    39,    -1,    -1,
+      -1,    -1,    -1,    38
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     8,    28,    12,     0,     9,    10,     3,    13,    16,
-      18,    19,    29,    30,    31,    23,     3,     4,     5,    22,
-      24,    32,    33,    34,    32,    24,    24,    11,    31,    32,
-      34,    32,     6,     7,    14,    20,    21,    17,    32,     3,
-      12,    26,    25,    33,    33,    29,    33,    33,    29,    25,
-      25,    26,    15,    11,    26,    26,    29,    17,    11,    26,
-      13,    26
+       0,     8,    32,    12,     0,     9,    10,     3,    13,    16,
+      18,    19,    33,    34,    35,    23,     3,     4,     5,    22,
+      24,    36,    37,    38,    39,    40,    41,    36,    24,    24,
+      11,    35,    36,    41,    36,    14,    20,    21,     6,     7,
+      17,    36,     3,    12,    26,    25,    33,    38,    38,    40,
+      39,    33,    25,    25,    26,    15,    11,    26,    26,    33,
+      17,    11,    26,    13,    26
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    27,    28,    29,    30,    30,    31,    31,    31,    31,
-      31,    32,    32,    32,    32,    32,    33,    34,    34,    34,
-      34,    34
+       0,    31,    32,    33,    34,    34,    35,    35,    35,    35,
+      35,    36,    37,    37,    37,    38,    38,    39,    39,    40,
+      41,    41,    41,    41,    41
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     8,     1,     1,     2,     4,     9,     7,     5,
-       5,     1,     3,     3,     3,     3,     1,     1,     1,     1,
-       3,     2
+       5,     1,     1,     3,     3,     1,     3,     1,     3,     1,
+       1,     1,     1,     3,     2
 };
 
 
@@ -1131,77 +1138,70 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: PROCEDURE MAIN IS BEGIN_ block END MAIN SEMICOL  */
-#line 36 "mini_ada.y"
+#line 40 "mini_ada.y"
       {
-          // create program root and attach the parsed block
           root = new_ast(NODE_PROGRAM, "Main");
           root->body = (yyvsp[-3].node);
       }
-#line 1141 "mini_ada.tab.c"
+#line 1147 "mini_ada.tab.c"
     break;
 
   case 3: /* block: statement_list  */
-#line 46 "mini_ada.y"
+#line 48 "mini_ada.y"
       {
-          // wrap the statement_list into a NODE_BLOCK (steal its children)
           (yyval.node) = new_ast(NODE_BLOCK, NULL);
           (yyval.node)->children = (yyvsp[0].node)->children;
           (yyval.node)->child_count = (yyvsp[0].node)->child_count;
-          free((yyvsp[0].node)); // free the temporary list node
+          free((yyvsp[0].node));
       }
-#line 1153 "mini_ada.tab.c"
+#line 1158 "mini_ada.tab.c"
     break;
 
   case 4: /* statement_list: statement  */
 #line 58 "mini_ada.y"
       {
-          // first statement -> create block container with one child
           (yyval.node) = new_ast(NODE_BLOCK, NULL);
           (yyval.node)->children = malloc(sizeof(AST*));
           (yyval.node)->children[0] = (yyvsp[0].node);
           (yyval.node)->child_count = 1;
       }
-#line 1165 "mini_ada.tab.c"
+#line 1169 "mini_ada.tab.c"
     break;
 
   case 5: /* statement_list: statement_list statement  */
-#line 66 "mini_ada.y"
+#line 65 "mini_ada.y"
       {
-          // append statement to existing list's children array
           (yyval.node) = (yyvsp[-1].node);
           (yyval.node)->child_count++;
           (yyval.node)->children = realloc((yyval.node)->children, sizeof(AST*) * (yyval.node)->child_count);
           (yyval.node)->children[(yyval.node)->child_count - 1] = (yyvsp[0].node);
       }
-#line 1177 "mini_ada.tab.c"
+#line 1180 "mini_ada.tab.c"
     break;
 
   case 6: /* statement: ID ASSIGN expr SEMICOL  */
-#line 78 "mini_ada.y"
+#line 75 "mini_ada.y"
       {
-          // assignment: ID := expr;
           (yyval.node) = new_ast(NODE_ASSIGN, (yyvsp[-3].str));
           (yyval.node)->right = (yyvsp[-1].node);
       }
-#line 1187 "mini_ada.tab.c"
+#line 1189 "mini_ada.tab.c"
     break;
 
   case 7: /* statement: IF expr THEN block ELSE block END IF SEMICOL  */
-#line 84 "mini_ada.y"
+#line 80 "mini_ada.y"
       {
-          // if-then-else statement
           (yyval.node) = new_ast(NODE_IF, NULL);
           (yyval.node)->cond = (yyvsp[-7].node);
           (yyval.node)->then_branch = (yyvsp[-5].node);
           (yyval.node)->else_branch = (yyvsp[-3].node);
       }
-#line 1199 "mini_ada.tab.c"
+#line 1200 "mini_ada.tab.c"
     break;
 
   case 8: /* statement: WHILE expr LOOP block END LOOP SEMICOL  */
-#line 92 "mini_ada.y"
+#line 87 "mini_ada.y"
       {
-          // while loop
           (yyval.node) = new_ast(NODE_WHILE, NULL);
           (yyval.node)->cond = (yyvsp[-5].node);
           (yyval.node)->body = (yyvsp[-3].node);
@@ -1210,98 +1210,112 @@ yyreduce:
     break;
 
   case 9: /* statement: PUT_LINE LPAREN expr RPAREN SEMICOL  */
-#line 99 "mini_ada.y"
+#line 93 "mini_ada.y"
       {
-          // procedure call: Put_Line(expr);
           (yyval.node) = new_ast(NODE_CALL, "Put_Line");
           (yyval.node)->left = (yyvsp[-2].node);
       }
-#line 1220 "mini_ada.tab.c"
+#line 1219 "mini_ada.tab.c"
     break;
 
   case 10: /* statement: GET_LINE LPAREN ID RPAREN SEMICOL  */
-#line 105 "mini_ada.y"
+#line 98 "mini_ada.y"
       {
-          // procedure call: Get_Line(ID);
           (yyval.node) = new_ast(NODE_CALL, "Get_Line");
-          // Store the variable name in a new NODE_VAR node attached to 'left'
-          (yyval.node)->left = new_ast(NODE_VAR, (yyvsp[-2].str)); 
+          (yyval.node)->left = new_ast(NODE_VAR, (yyvsp[-2].str));
       }
-#line 1231 "mini_ada.tab.c"
+#line 1228 "mini_ada.tab.c"
     break;
 
-  case 11: /* expr: term  */
-#line 116 "mini_ada.y"
+  case 11: /* expr: logical_expr  */
+#line 107 "mini_ada.y"
       { (yyval.node) = (yyvsp[0].node); }
-#line 1237 "mini_ada.tab.c"
+#line 1234 "mini_ada.tab.c"
     break;
 
-  case 12: /* expr: expr OP term  */
-#line 118 "mini_ada.y"
-      { (yyval.node) = new_ast_binary(NODE_BINOP, (yyvsp[-1].str), (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1243 "mini_ada.tab.c"
+  case 12: /* logical_expr: comparison_expr  */
+#line 112 "mini_ada.y"
+      { (yyval.node) = (yyvsp[0].node); }
+#line 1240 "mini_ada.tab.c"
     break;
 
-  case 13: /* expr: expr COMPARE term  */
-#line 120 "mini_ada.y"
-      { (yyval.node) = new_ast_binary(NODE_BINOP, (yyvsp[-1].str), (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1249 "mini_ada.tab.c"
-    break;
-
-  case 14: /* expr: expr AND term  */
-#line 122 "mini_ada.y"
+  case 13: /* logical_expr: logical_expr AND comparison_expr  */
+#line 114 "mini_ada.y"
       { (yyval.node) = new_ast_binary(NODE_BINOP, "and", (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1255 "mini_ada.tab.c"
+#line 1246 "mini_ada.tab.c"
     break;
 
-  case 15: /* expr: expr OR term  */
-#line 124 "mini_ada.y"
+  case 14: /* logical_expr: logical_expr OR comparison_expr  */
+#line 116 "mini_ada.y"
       { (yyval.node) = new_ast_binary(NODE_BINOP, "or", (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1261 "mini_ada.tab.c"
+#line 1252 "mini_ada.tab.c"
     break;
 
-  case 16: /* term: factor  */
-#line 129 "mini_ada.y"
+  case 15: /* comparison_expr: arith_expr  */
+#line 121 "mini_ada.y"
       { (yyval.node) = (yyvsp[0].node); }
-#line 1267 "mini_ada.tab.c"
+#line 1258 "mini_ada.tab.c"
     break;
 
-  case 17: /* factor: NUMBER  */
+  case 16: /* comparison_expr: arith_expr COMPARE arith_expr  */
+#line 123 "mini_ada.y"
+      { (yyval.node) = new_ast_binary(NODE_BINOP, (yyvsp[-1].str), (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1264 "mini_ada.tab.c"
+    break;
+
+  case 17: /* arith_expr: term  */
+#line 128 "mini_ada.y"
+      { (yyval.node) = (yyvsp[0].node); }
+#line 1270 "mini_ada.tab.c"
+    break;
+
+  case 18: /* arith_expr: arith_expr OP term  */
+#line 130 "mini_ada.y"
+      { (yyval.node) = new_ast_binary(NODE_BINOP, (yyvsp[-1].str), (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1276 "mini_ada.tab.c"
+    break;
+
+  case 19: /* term: factor  */
 #line 135 "mini_ada.y"
-      { (yyval.node) = new_ast(NODE_LITERAL, (yyvsp[0].str)); }
-#line 1273 "mini_ada.tab.c"
+      { (yyval.node) = (yyvsp[0].node); }
+#line 1282 "mini_ada.tab.c"
     break;
 
-  case 18: /* factor: STRING  */
-#line 137 "mini_ada.y"
+  case 20: /* factor: NUMBER  */
+#line 140 "mini_ada.y"
       { (yyval.node) = new_ast(NODE_LITERAL, (yyvsp[0].str)); }
-#line 1279 "mini_ada.tab.c"
+#line 1288 "mini_ada.tab.c"
     break;
 
-  case 19: /* factor: ID  */
-#line 139 "mini_ada.y"
+  case 21: /* factor: STRING  */
+#line 142 "mini_ada.y"
+      { (yyval.node) = new_ast(NODE_LITERAL, (yyvsp[0].str)); }
+#line 1294 "mini_ada.tab.c"
+    break;
+
+  case 22: /* factor: ID  */
+#line 144 "mini_ada.y"
       { (yyval.node) = new_ast(NODE_VAR, (yyvsp[0].str)); }
-#line 1285 "mini_ada.tab.c"
+#line 1300 "mini_ada.tab.c"
     break;
 
-  case 20: /* factor: LPAREN expr RPAREN  */
-#line 141 "mini_ada.y"
+  case 23: /* factor: LPAREN expr RPAREN  */
+#line 146 "mini_ada.y"
       { (yyval.node) = (yyvsp[-1].node); }
-#line 1291 "mini_ada.tab.c"
+#line 1306 "mini_ada.tab.c"
     break;
 
-  case 21: /* factor: NOT factor  */
-#line 143 "mini_ada.y"
+  case 24: /* factor: NOT factor  */
+#line 148 "mini_ada.y"
       {
-          // unary not
           (yyval.node) = new_ast(NODE_UNARYOP, "not");
           (yyval.node)->left = (yyvsp[0].node);
       }
-#line 1301 "mini_ada.tab.c"
+#line 1315 "mini_ada.tab.c"
     break;
 
 
-#line 1305 "mini_ada.tab.c"
+#line 1319 "mini_ada.tab.c"
 
       default: break;
     }
@@ -1494,15 +1508,4 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 150 "mini_ada.y"
-
-
-/* Main entry: parse, then print AST if successful 
-int main(void) {
-    if (yyparse() == 0) {
-        printf("Parsed successfully!\n");
-        print_ast(root, 0);
-    }
-    return 0;
-}
-*/
+#line 154 "mini_ada.y"

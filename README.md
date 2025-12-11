@@ -1,5 +1,5 @@
 🧠 Mini Ada Compiler
-This project implements a Mini Ada compiler frontend, capable of parsing a simplified subset of the Ada programming language and generating an Abstract Syntax Tree (AST) representation of the program.
+This project implements a Mini Ada compiler, from parsing a simplified subset of the Ada programming language and generating an Abstract Syntax Tree (AST) representation of the program to generating the intermediate and then MIPS code.
 
 The project uses Flex for lexical analysis and Bison for parsing, written in C.
 
@@ -77,6 +77,7 @@ For test.ada that looks like this:
 ```text
 procedure Main is
 begin
+    X := 0;
     Get_Line(X);
     if X = 10 then
         Put_Line(X+10);
@@ -90,6 +91,8 @@ end Main;
 The tree printed is:
 PROGRAM [Main]
   BLOCK
+    ASSIGN [X]
+      LITERAL [0]
     CALL [Get_Line]
       VAR [X]
     IF
@@ -109,14 +112,12 @@ PROGRAM [Main]
         CALL [Put_Line]
           VAR [Y]
 
-Semantic Error: Variable 'X' used before assignment.
-Semantic Error: Variable 'X' used before assignment.
-Semantic Error: Variable 'X' used before assignment.
-Semantic Error: Variable 'X' used before assignment.
-
 --- Symbol Table ---
-Name: Y | Type: INT | Offset: 0
+Name: Y          | Type: INT    | Offset: 4
+Name: X          | Type: INT    | Offset: 0
 
+--------- TAC -----------
+X = 0
 READ X
 t0 = X == 10
 ifFalse t0 goto L0

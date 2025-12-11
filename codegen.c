@@ -74,12 +74,12 @@ char *generate_expr(AST *node)
             op = TAC_LT;
         else if (strcmp(node->value, "=") == 0)
             op = TAC_EQ;
-        // The missing lines:
+        else if (strcmp(node->value, "/=") == 0)
+            op = TAC_NEQ;
         else if (strcmp(node->value, "and") == 0)
             op = TAC_AND;
         else if (strcmp(node->value, "or") == 0)
             op = TAC_OR;
-        // Default
         else
             op = TAC_ADD;
 
