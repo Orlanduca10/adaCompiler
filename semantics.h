@@ -3,7 +3,6 @@
 
 #include "ast.h"
 
-// Prototype for the function
 void check_semantics(AST *node);
 
 #endif

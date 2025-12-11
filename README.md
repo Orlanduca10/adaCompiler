@@ -130,6 +130,7 @@ Y = t2
 PRINT Y
 L1:
 ```
+And test1.ada that looks like this:   
 ```
 procedure Main is
 begin

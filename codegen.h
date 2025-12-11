@@ -8,9 +8,6 @@
 extern TAC *tac_head;
 extern TAC *tac_tail;
 
-/* Type constant for integer variables */
-#define TYPE_INT 0
-
 /**
  * Creates a new temporary variable and inserts it into the symbol table.
  * 

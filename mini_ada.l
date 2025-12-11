@@ -3,7 +3,10 @@
 #include "mini_ada.tab.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 %}
+
+%option yylineno
 
 digit     [0-9]
 id        [A-Za-z_][A-Za-z0-9_]*
@@ -27,8 +30,16 @@ string    \"[^\"]*\"
 "not"              return NOT;
 
 ":="               return ASSIGN;
-"<="|">="|"="|"/="|"<"|">"  { yylval.str = strdup(yytext); return COMPARE; }
-"+"|"-"|"*"|"/"    { yylval.str = strdup(yytext); return OP; }
+"<="               { yylval.str = strdup(yytext); return COMPARE; }
+">="               { yylval.str = strdup(yytext); return COMPARE; }
+"/="               { yylval.str = strdup(yytext); return COMPARE; }
+"<"                { yylval.str = strdup(yytext); return COMPARE; }
+">"                { yylval.str = strdup(yytext); return COMPARE; }
+"="                { yylval.str = strdup(yytext); return COMPARE; }
+"+"                { yylval.str = strdup(yytext); return OP; }
+"-"                { yylval.str = strdup(yytext); return OP; }
+"*"                { yylval.str = strdup(yytext); return OP; }
+"/"                { yylval.str = strdup(yytext); return OP; }
 "("                return LPAREN;
 ")"                return RPAREN;
 ";"                return SEMICOL;
@@ -37,8 +48,13 @@ string    \"[^\"]*\"
 {string}           { yylval.str = strdup(yytext); return STRING; }
 {id}               { yylval.str = strdup(yytext); return ID; }
 
-[ \t\r\n]+         ;
-.                  ;
+[ \t\r\n]+         /* Ignora whitespace */
+
+.                  { 
+                     fprintf(stderr, "Lexical error at line %d: invalid character '%s'\n", 
+                             yylineno, yytext); 
+                     exit(1);
+                   }
 %%
 
 int yywrap() { return 1; }

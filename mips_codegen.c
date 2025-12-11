@@ -25,9 +25,6 @@ void emit_mips_header(FILE *f)
 
     while (curr_str)
     {
-        // DO NOT strip quotes from string value before outputting to .data
-        // In MIPS assembly, .asciiz expects quotes around the string
-        // e.g., "Ola" should remain as "Ola" in the .data section
         fprintf(f, "%s: .asciiz %s\n", curr_str->label, curr_str->value);
         curr_str = curr_str->next;
     }
@@ -40,7 +37,6 @@ void emit_mips_header(FILE *f)
     extern int current_offset;
 
     // Reserve space for variables on the stack (addi $sp, $sp, -[offset])
-    // The offset must be positive.
     fprintf(f, "  addi $sp, $sp, -%d\n", current_offset);
 }
 
@@ -109,9 +105,6 @@ void generate_mips(TAC *head, FILE *f)
 
     while (curr)
     {
-        // REMOVE the extra fprintf - only print once in the switch
-        // fprintf(f, "  # TAC: ");  // Move this inside each case
-
         switch (curr->op)
         {
         case TAC_COPY:
@@ -195,7 +188,7 @@ void generate_mips(TAC *head, FILE *f)
             break;
 
         case TAC_PRINT:
-            // TAC: PRINT "Ola" or PRINT X
+
             fprintf(f, "  # PRINT %s\n", curr->arg1);
 
             // If the argument starts with '"', it's a string literal
@@ -270,7 +263,51 @@ void generate_mips(TAC *head, FILE *f)
             fprintf(f, "  seq $t2, %s, 0\n", T0); 
             store_variable_mips(f, curr->result, "$t2");
             break;
+        
+        case TAC_MUL:
+            // TAC: t2 = X * 10
+            fprintf(f, "  # %s = %s * %s\n", curr->result, curr->arg1, curr->arg2);
+            
+            get_operand_mips(f, curr->arg1, T0); // Get Arg1 into $t0
+            get_operand_mips(f, curr->arg2, T1); // Get Arg2 into $t1
+            
+            // MIPS multiplication: mult $t0, $t1 (result in HI:LO)
+            // Then mflo $t2 to get lower 32 bits
+            fprintf(f, "  mult %s, %s\n", T0, T1);
+            fprintf(f, "  mflo $t2\n");
+            
+            // Store result (now in $t2) into TAC result
+            store_variable_mips(f, curr->result, "$t2");
+            break;
 
+        case TAC_DIV:
+            // TAC: t2 = X / 10
+            fprintf(f, "  # %s = %s / %s\n", curr->result, curr->arg1, curr->arg2);
+            
+            get_operand_mips(f, curr->arg1, T0); // Get Arg1 into $t0
+            get_operand_mips(f, curr->arg2, T1); // Get Arg2 into $t1
+            
+            // MIPS division: div $t0, $t1 (quotient in LO, remainder in HI)
+            // Then mflo $t2 to get quotient
+            fprintf(f, "  div %s, %s\n", T0, T1);
+            fprintf(f, "  mflo $t2\n");
+            
+            // Store result (now in $t2) into TAC result
+            store_variable_mips(f, curr->result, "$t2");
+            break;
+
+        case TAC_NEQ:
+            // TAC: t0 = X != Y
+            fprintf(f, "  # %s = %s != %s\n", curr->result, curr->arg1, curr->arg2);
+            
+            get_operand_mips(f, curr->arg1, T0);
+            get_operand_mips(f, curr->arg2, T1);
+            
+            // MIPS 'sne' (Set Not Equal) sets dest to 1 if not equal, 0 otherwise
+            fprintf(f, "  sne $t2, %s, %s\n", T0, T1);
+            
+            store_variable_mips(f, curr->result, "$t2");
+            break;
         default:
             fprintf(f, "  # Unknown TAC operation: %d\n", curr->op);
             break;

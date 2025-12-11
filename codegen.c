@@ -1,6 +1,6 @@
 #include "tac.h"
 #include "ast.h"
-#include "symbol_table.h" // Needed for insert_symbol
+#include "symbol_table.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -128,13 +128,11 @@ void generate_stmt(AST *node)
             if (node->left && node->left->type == NODE_VAR)
             {
                 char *var_name = node->left->value;
-                // Generate TAC: READ X
-                // We use the 'result' field to store the destination variable name
+
                 append_tac(new_tac(TAC_READ, NULL, NULL, var_name));
             }
         }
     }
-    // --- NEW: IF-THEN-ELSE IMPLEMENTATION ---
     else if (node->type == NODE_IF)
     {
         char *L_false = make_label(); // Label for ELSE or END
@@ -142,6 +140,7 @@ void generate_stmt(AST *node)
 
         // 1. Calculate condition
         char *cond = generate_expr(node->cond);
+
         // 2. If condition is false (0), jump to L_false
         append_tac(new_tac(TAC_JFALSE, cond, NULL, L_false));
 
@@ -180,7 +179,6 @@ void generate_stmt(AST *node)
 
 void generate_code(AST *root)
 {
-    // Assuming root is PROGRAM
     if (root->body)
     {
         generate_stmt(root->body);

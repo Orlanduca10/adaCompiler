@@ -38,9 +38,9 @@ int main(int argc, char **argv) {
 
 
     generate_code(root);
-    print_tac(tac_head); // Debugging: Print generated TAC
+    print_tac(tac_head);
 
-    const char *outname = "out.s";
+    const char *outname = "out.asm";
     FILE *f = fopen(outname, "w");
     if (!f) { perror("fopen"); return 1; }
     generate_mips(tac_head, f);
